@@ -1,47 +1,65 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Outlet, NavLink } from 'react-router-dom';
 
 const App = () => {
   return (
-    <>
-      <h1>React Router</h1>
-
-      <Navigation />
-
-      <Routes>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<Home />} />
         <Route path="home" element={<Home />} />
         <Route path="users" element={<Users />} />
-      </Routes>
-    </>
+        <Route path="*" element={<NoMatch />} />
+      </Route>
+    </Routes>
   );
 };
 
-const Navigation = () => {
-  return (
-    <nav
-      style={{
-        borderBottom: 'solid 1px',
-        paddingBottom: '1rem',
-      }}
-    >
-      <Link to="/home">Home</Link>
-      <Link to="/users">Users</Link>
-    </nav>
-  );
+const NoMatch = () => {
+  return <p>There's nothing here: 404!</p>;
 };
 
 const Home = () => {
   return (
-    <main style={{ padding: '1rem 0' }}>
+    <>
       <h2>Home</h2>
-    </main>
+    </>
   );
 };
 
 const Users = () => {
   return (
-    <main style={{ padding: '1rem 0' }}>
+    <>
       <h2>Users</h2>
-    </main>
+    </>
+  );
+};
+
+const Layout = () => {
+  const style = ({ isActive }) => ({
+    fontWeight: isActive ? 'bold' : 'normal',
+  });
+
+  return (
+    <>
+      <h1>React Router</h1>
+
+      <nav
+        style={{
+          borderBottom: 'solid 1px',
+          paddingBottom: '1rem',
+        }}
+      >
+        <NavLink to="/home" style={style}>
+          Home
+        </NavLink>
+        <NavLink to="/users" style={style}>
+          Users
+        </NavLink>
+      </nav>
+
+      <main style={{ padding: '1rem 0' }}>
+        <Outlet />
+      </main>
+    </>
   );
 };
 
