@@ -1,12 +1,26 @@
-import { Routes, Route, Outlet, NavLink } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  Outlet,
+  Link,
+  NavLink,
+  useParams,
+} from 'react-router-dom';
 
 const App = () => {
+  const users = [
+    { id: '1', fullName: 'Christian Boyle' },
+    { id: '2', fullName: 'Lizzy Boyle' },
+  ];
+
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="home" element={<Home />} />
-        <Route path="users" element={<Users />} />
+        <Route path="users" element={<Users users={users} />}>
+          <Route path=":userId" element={<User />} />
+        </Route>
         <Route path="*" element={<NoMatch />} />
       </Route>
     </Routes>
@@ -25,10 +39,32 @@ const Home = () => {
   );
 };
 
-const Users = () => {
+const Users = ({ users }) => {
   return (
     <>
       <h2>Users</h2>
+
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}>
+            <Link to={`/users/${user.id}`}>{user.fullName}</Link>
+          </li>
+        ))}
+      </ul>
+
+      <Outlet />
+    </>
+  );
+};
+
+const User = () => {
+  const { userId } = useParams();
+
+  return (
+    <>
+      <h2>User: {userId}</h2>
+
+      <Link to="/users">Back to Users</Link>
     </>
   );
 };
