@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import {
   Routes,
   Route,
@@ -5,13 +7,22 @@ import {
   Link,
   NavLink,
   useParams,
+  useNavigate,
 } from 'react-router-dom';
 
 const App = () => {
-  const users = [
+  const navigate = useNavigate();
+
+  const [users, setUsers] = React.useState([
     { id: '1', fullName: 'Christian Boyle' },
     { id: '2', fullName: 'Lizzy Boyle' },
-  ];
+  ]);
+
+  const handleRemoveUser = (userId) => {
+    setUsers((state) => state.filter((user) => user.id !== userId));
+
+    navigate('/users');
+  };
 
   return (
     <Routes>
@@ -19,7 +30,10 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="home" element={<Home />} />
         <Route path="users" element={<Users users={users} />}>
-          <Route path=":userId" element={<User />} />
+          <Route
+            path=":userId"
+            element={<User onRemoveUser={handleRemoveUser} />}
+          />
         </Route>
         <Route path="*" element={<NoMatch />} />
       </Route>
@@ -57,12 +71,16 @@ const Users = ({ users }) => {
   );
 };
 
-const User = () => {
+const User = ({ onRemoveUser }) => {
   const { userId } = useParams();
 
   return (
     <>
       <h2>User: {userId}</h2>
+
+      <button type="button" onClick={() => onRemoveUser(userId)}>
+        Remove
+      </button>
 
       <Link to="/users">Back to Users</Link>
     </>
